@@ -62,6 +62,7 @@ $(document).ready(function() {
 		$message_class = "ok";
 	
 		if(isset($_POST['modifica'])) {
+			$id_pers = sanitize($_POST['id']);
 			$idqual = $_POST['qualifica'];
 			$nome = sanitize($_POST['nome']);
 			$cognome = sanitize($_POST['cognome']);
@@ -96,7 +97,7 @@ $(document).ready(function() {
 				$message_class = "ko";
 				$message = "Il numero telefonico e' un campo obbligatorio";
 			} else {
-				$sql = "SELECT count(*) FROM `anagrafica` WHERE data_out = '1970-01-01 00:00:00' AND tel = '".$tel."';";
+				$sql = "SELECT count(*) FROM `anagrafica` WHERE data_out = '1970-01-01 00:00:00' AND id != '".$id_pers."' AND tel = '".$tel."';";
 				$rs_cod = $db->Execute($sql);
 				if ($rs_cod->fields[0] < 1) {
 
@@ -111,7 +112,7 @@ $(document).ready(function() {
 					$sql .= "data_in = ".$db->DBTimeStamp($d_in).", ";
 					$sql .= "data_out_pres = ".$db->DBTimeStamp($d_out_pres).", ";
 					$sql .= "data_out = ".$db->DBTimeStamp($d_out)." ";
-					$sql .= "WHERE id = '".$_POST['id']."';";
+					$sql .= "WHERE id = '".$id_pers."';";
 
 					if ($db->Execute($sql) === false) {
 						$message = 'error modifing: '.$db->ErrorMsg().'<br />';

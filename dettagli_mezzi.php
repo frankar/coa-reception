@@ -54,6 +54,7 @@ $(document).ready(function() {
 		$message_class = "ok";
 	
 		if(isset($_POST['modifica'])) {
+			$id_mezzo = sanitize($_POST['id']);
 			$tipo = $_POST['tipo'];
 			$targa = sanitize($_POST['targa']);
 			$resp = $_POST['resp'];
@@ -78,9 +79,9 @@ $(document).ready(function() {
 				$message_class = "ko";
 			} else {
 				// controllo che la targa sia unica
-				$sql = "SELECT count(*) FROM mezzi WHERE data_out = '1970-01-01 00:00:00' AND targa = '".$_POST['targa']."';";
+				$sql = "SELECT count(*) FROM mezzi WHERE data_out = '1970-01-01 00:00:00' AND id != '".$id_mezzo."' AND targa = '".$_POST['targa']."';";
 				$rs_cod = $db->Execute($sql);
-				if ($rs_cod->fields[0] > 1) {
+				if ($rs_cod->fields[0] > 0) {
 					$message_class = "ko";
 					$message = 'La targa '.$targa.' &egrave; gi&agrave; presente in archivio !';				
 				} else {
@@ -104,8 +105,18 @@ $(document).ready(function() {
 		};
 		
 		if ($message <> '') {
+			$soundfile = ($message_class == "ko") ? "error" : "ok";
 			?>
-			<div id="message" class="<?php echo $message_class ?>"><?php echo $message ?></div>
+			<div id="message" class="<?php echo $message_class ?>"><?php echo $message ?>
+				<?php if ($options['audio']) { ?>
+				<audio autoplay="autoplay">
+				  <source src="<?php echo dirname($_SERVER['PHP_SELF']).'/files/'.$soundfile.'.wav' ?>" type="audio/wav" />
+				  <source src="<?php echo dirname($_SERVER['PHP_SELF']).'/files/'.$soundfile.'.ogg' ?>" type="audio/ogg" />
+				  <source src="<?php echo dirname($_SERVER['PHP_SELF']).'/files/'.$soundfile.'.mp3' ?>" type="audio/mpeg" />
+				Your browser does not support this audio
+				</audio>
+				<?php } ?>
+			</div>
 			<?php
 			if ($message_class == "ok") {
 				?>
@@ -117,7 +128,7 @@ $(document).ready(function() {
 				<?php
 			}
 			?>
-			<p><a href="dettagli_mezzi.php?id=<?php echo $_POST['id']?>">Torna ai dettagli del mezzo VF <?php echo $targa ?></a></p>
+			<p><a href="dettagli_mezzi.php?id=<?php echo $_POST['id']?>">Torna ai dettagli del mezzo</a></p>
 			<?php
 		}
 		
