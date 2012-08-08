@@ -249,11 +249,8 @@ if (isset($_POST['inviato'])) {
 
 					$objcom .= "COA del giorno ". $_POST['data']."\r\n";
 
-					//$destinatario = $vc['mail'];
-					// $destinatario = "info@danieleromano.org";
-					//$destinatario = "coa.modena@vigilfuoco.it";
-					// $destinatario = "franco.carinato@gmail.com";
-					$destinatario = "rossano.rizzato@vigilfuoco.it";
+					$destinatario = $vc['mail'];
+					//$destinatario = "test.test@vigilfuoco.it";
 					
 					
 
@@ -317,12 +314,8 @@ if (isset($_POST['inviato'])) {
 
 				$oggetto .= "COA del giorno ". $_POST['data']."\r\n";
 
-				//$destinatario = $v['mail'];
-				// $destinatario = "info@danieleromano.org";
-				//$destinatario = "coa.modena@vigilfuoco.it";
-				// $destinatario = "franco.carinato@gmail.com";
-				//$destinatario = "franco.carinato@vigilfuoco.it";
-				$destinatario = "rossano.rizzato@vigilfuoco.it";
+				$destinatario = $v['mail'];
+				$destinatario = "test.test@vigilfuoco.it";
 				
 				
 
