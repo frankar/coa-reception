@@ -321,7 +321,7 @@ if (isset($_POST['inviato'])) {
 				$oggetto .= "COA del giorno ". $_POST['data']."\r\n";
 
 				$destinatario = $v['mail'];
-				$destinatario = "test.test@vigilfuoco.it";
+				//$destinatario = "test.test@vigilfuoco.it";
 				
 				
 
