@@ -106,7 +106,6 @@
 		$rs = $db->Execute($sql);
 		while (!$rs->EOF) {
 			$r_ass = $rs->GetRowAssoc();
-			//print_r($r_ass);
 			?>
 			<tr>
 				<td><a href="dettagli.php?id=<?php echo $r_ass['ID'] ?>"><?php echo $r_ass['QUAL'] ?></a></td>

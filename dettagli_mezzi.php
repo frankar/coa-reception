@@ -185,7 +185,7 @@ $(document).ready(function() {
 							$sql = "SELECT * FROM comandi;";
 							$rsl = $db->Execute($sql);
 							while (!$rsl->EOF) {
-								?><option <?php echo ($r['ID_COMANDO'] == $rsl->fields[0]) ? 'selected="selected"':'' ?>value="<?php echo $rsl->fields[0] ?>"><?php echo $rsl->fields[1] ?></option><?php
+								?><option <?php echo ($r['ID_COMANDO'] == $rsl->fields[0]) ? 'selected="selected"':'' ?> value="<?php echo $rsl->fields[0] ?>"><?php echo $rsl->fields[2] ?><?php echo ($rsl->fields[3] != '' ? ' - '.$rsl->fields[3] : '') ?></option><?php
 								$rsl->MoveNext();
 							}
 							?>

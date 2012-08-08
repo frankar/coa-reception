@@ -9,7 +9,9 @@ $(document).ready(function() {
 	// Qualifica
 	//
 	$("#add_qual").click(function(e) {
-		$('#new_qual').lightbox_me({
+		$('#new_qual')
+		    .append('<a class="close" href="#"><img src="css/close_button.png" alt="Close Button" /></a>')
+	        .lightbox_me({
         centered: true, 
         onLoad: function() { 
             $('#form2').find('input:first').focus()
@@ -46,7 +48,9 @@ $(document).ready(function() {
 	// Nuovo Tipo Mezzo
 	//
 	$("#add_tipo_mezzo").click(function(e) {
-		$('#new_tipo_mezzo').lightbox_me({
+		$('#new_tipo_mezzo')
+		    .append('<a class="close" href="#"><img src="css/close_button.png" alt="Close Button" /></a>')
+	        .lightbox_me({
 			centered: true, 
 			onLoad: function() { 
 				$('#form4').find('input:first').focus()
@@ -82,7 +86,9 @@ $(document).ready(function() {
 	// New Comando
 	//
 	$("#add_comando, #add_com").click(function(e) {
-		$("#new_comando").lightbox_me({
+		$("#new_comando")
+		    .append('<a class="close" href="#"><img src="css/close_button.png" alt="Close Button" /></a>')
+	        .lightbox_me({
 			centered: true, 
 			onLoad: function() { 
 				$('#form5').find('input:first').focus()
@@ -92,19 +98,26 @@ $(document).ready(function() {
 	});
 
 	$("#new_comando span.button").click(function(e) {
-		var nome_comando = $("#nome_comando").val();
+		var sigla_comando = $("#nome_comando").val();
+		var nome_comando = $("#nome_es_comando").val();
+		var mail_comando = $("#mail_comando").val();
+		var id_dir = $("#dir").val();
 		$.ajax({
 			type: "POST",
 			url: "new_comando.php",
-			data: "inviato=1&nome=" + nome_comando,
+			data: "inviato=1&sigla=" + sigla_comando + "&nome=" + nome_comando + "&mail=" + mail_comando + "&iddir= " + id_dir,
 			dataType: "html",
 			success: function(msg)
 			{
-				alert("Ok, Comando inserito");
-				$('#comando_mezzo').append( new Option(nome_comando,msg,msg,msg) );
-				sort_select("#comando_mezzo");
-				$('#com').append( new Option(nome_comando,msg,msg,msg) );
-				sort_select("#com");
+				if (is_int(msg)) {
+    				alert("Ok, Comando inserito");
+    				$('#comando_mezzo').append( new Option(sigla_comando + ' - '+nome_comando,msg,msg,msg) );
+    				sort_select("#comando_mezzo");
+    				$('#com').append( new Option(sigla_comando + ' - '+nome_comando,msg,msg,msg) );
+    				sort_select("#com");
+				} else {
+				    alert(msg);
+				}
 			},
 			error: function()
 			{
@@ -115,6 +128,51 @@ $(document).ready(function() {
 		$('#new_comando').trigger('close');
 		e.preventDefault();
 	});
+
+
+	//
+	// New Direzione
+	//
+	$("#add_dir").click(function(e) {
+		$("#new_direzione")
+		    .append('<a class="close" href="#"><img src="css/close_button.png" alt="Close Button" /></a>')
+	        .lightbox_me({
+			centered: true, 
+			onLoad: function() { 
+				//$('#form6').find('input:first').focus()
+            }
+        });
+		e.preventDefault();
+	});
+
+    $("#new_direzione span.button").click(function(e) {
+     var sigla_direzione = $("#nome_direzione").val();
+     var nome_direzione = $("#nome_es_direzione").val();
+     var mail_drezione = $("#mail_direzione").val();
+     $.ajax({
+         type: "POST",
+         url: "new_direzione.php",
+         data: "inviato=1&sigla=" + sigla_direzione + "&nome=" + nome_direzione + "&mail=" + mail_drezione,
+         dataType: "html",
+         success: function(msg)
+         {
+             if (is_int(msg)) {
+                 alert("Ok, Direzione inserita");
+                 $('#dir').append( new Option(sigla_direzione,msg,msg,msg) );
+                 sort_select("#dir");
+             } else {
+                 alert(msg);
+             }
+         },
+         error: function()
+         {
+             alert("Chiamata fallita, si prega di riprovare...");
+         }
+     });
+     
+     $('#new_direzione').trigger('close');
+     e.preventDefault();
+    });
 
 	//
 	// Date Time Picker
@@ -147,7 +205,9 @@ $(document).ready(function() {
 	// Nuova mansione
 	//
 	$("#add_mansione").click(function(e) {
-		$('#new_mansione').lightbox_me({
+		$('#new_mansione')
+		    .append('<a class="close" href="#"><img src="css/close_button.png" alt="Close Button" /></a>')
+	        .lightbox_me({
 			centered: true, 
 			onLoad: function() { 
 				$('#form6').find('input:first').focus()

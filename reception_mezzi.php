@@ -125,13 +125,49 @@
 		<form id="form5" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="post" accept-charset="utf-8">
 			<p class="evidente"><label for="nome_comando">Sigla:</label>
 			<input type="text" name="nome_comando" id="nome_comando" />
+
+			<p class="evidente"><label for="nome_es_comando">Nome:</label>
+			<input type="text" name="nome_es_comando" id="nome_es_comando" />
+
+			<p class="evidente"><label for="mail_comando">E.mail:</label>
+			<input type="text" name="mail_comando" id="mail_comando" />
+
+			<p class="evidente"><label for="dir">Direzione di appartenenza</label>
+				<select name="dir" id="dir" size="1">
+					<?php
+					$sql = "SELECT id, nome, esteso FROM comandi where id = id_dir ORDER BY nome;";
+					$rsl = $db->Execute($sql);
+					$r = $rsl->GetRowAssoc();
+					while (!$rsl->EOF) {
+						?><option value="<?php echo $rsl->fields[0] ?>"><?php echo $rsl->fields[1] ?></option><?php
+						$rsl->MoveNext();
+					}
+					?>
+				</select> <span class="button2" id="add_dir">Aggiungi Direzione</span></p>
+			
 			<input type="hidden" name="inviato_comando" value="1" /></p>
 			<p><span class="button">Aggiungi Nome Comando</span></p>
 
 		</form>
 	</div>
 
+	<div id="new_direzione">
+		<h2>Nuova Direzione</h2>
+		<form id="form6" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="post" accept-charset="utf-8">
+			<p class="evidente"><label for="nome_direzione">Sigla:</label>
+			<input type="text" name="nome_direzione" id="nome_direzione" />
 
+			<p class="evidente"><label for="nome_es_direzione">Nome:</label>
+			<input type="text" name="nome_es_direzione" id="nome_es_direzione" />
+
+			<p class="evidente"><label for="mail_direzione">E.mail:</label>
+			<input type="text" name="mail_direzione" id="mail_direzione" />
+			
+			<input type="hidden" name="inviato_direzione" value="1" /></p>
+			<p><span class="button">Aggiungi Nome Direzione</span></p>
+
+		</form>
+	</div>
 	
 	<form id="form1" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="post" accept-charset="utf-8">
 
@@ -154,11 +190,11 @@
 		<p class="evidente"><label for="comando_mezzo">Comando  di provenienza:</label>
 		<select name="comando_mezzo" id="comando_mezzo" size="1">
 		<?php
-			$sql = "SELECT * FROM comandi ORDER BY nome;";
+			$sql = "SELECT id, nome, esteso FROM comandi ORDER BY nome;";
 			$rsl = $db->Execute($sql);
 			$r = $rsl->GetRowAssoc();
 			while (!$rsl->EOF) {
-				?><option <?php echo ($r['NOME'] == $rsl->fields[0]) ? 'selected="selected"':'' ?>value="<?php echo $rsl->fields[0] ?>"><?php echo $rsl->fields[1] ?></option><?php
+				?><option value="<?php echo $rsl->fields[0] ?>"><?php echo $rsl->fields[1] ?><?php echo ($rsl->fields[2] != '' ? ' - '.$rsl->fields[2] : '') ?></option><?php
 				$rsl->MoveNext();
 			}
 		?>
@@ -174,7 +210,7 @@
 
 
 		<p><input type="hidden" id="inviato" name="inviato" value="1" />
-			<input type="submit" value="Invia &rarr;" /> 		</</p>
+			<input type="submit" value="Invia &rarr;" /></p>
 	</form>
 	
 	<div id="log">

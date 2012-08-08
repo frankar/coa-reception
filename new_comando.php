@@ -6,14 +6,16 @@
 		$inviato = '';
 	}
 	if ($inviato == 1) {
+		$sigla = $_POST['sigla'];
 		$nome = $_POST['nome'];
-		$sql = "SELECT count(*) FROM `comandi` WHERE nome = '".$nome."';";
+		$mail = $_POST['mail'];
+		$id_dir = $_POST['iddir'];
+		$sql = "SELECT count(*) FROM `comandi` WHERE nome = '".$sigla."';";
 		$rs_cod = $db->Execute($sql);
 		if ($rs_cod->fields[0] < 1) {
-			$sql = "INSERT INTO `comandi` (`nome`) VALUES ('".$nome."');";
+			$sql = "INSERT INTO `comandi` (`nome`,`esteso`,`mail`,`id_dir`) VALUES ('".$sigla."','".$nome."','".$mail."','".$id_dir."');";
 			if ($db->Execute($sql) === false) {
-				$message = 'error inserting: '.$db->ErrorMsg().'<br />';
-				$message_class = "ko";
+				$message = 'Error inserting: '.$db->ErrorMsg().'<br />';
 			}
 			
 			$message = $db->Insert_ID();

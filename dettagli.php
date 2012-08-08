@@ -93,13 +93,13 @@ $(document).ready(function() {
 
 
 
-			if ($tel == '') {
+			if ($tel == '' and intval($options['check_tel']) > 0) {
 				$message_class = "ko";
 				$message = "Il numero telefonico e' un campo obbligatorio";
 			} else {
 				$sql = "SELECT count(*) FROM `anagrafica` WHERE data_out = '1970-01-01 00:00:00' AND id != '".$id_pers."' AND tel = '".$tel."';";
 				$rs_cod = $db->Execute($sql);
-				if ($rs_cod->fields[0] < 1) {
+				if ($rs_cod->fields[0] < 1 or intval($options['check_tel']) < 2) {
 
 					$sql = "UPDATE anagrafica SET ";
 					$sql .= "idqual = '".$idqual."', ";
@@ -200,7 +200,7 @@ $(document).ready(function() {
 							$sql = "SELECT * FROM comandi;";
 							$rsl = $db->Execute($sql);
 							while (!$rsl->EOF) {
-								?><option <?php echo ($r['COMANDO'] == $rsl->fields[0]) ? 'selected="selected"':'' ?>value="<?php echo $rsl->fields[0] ?>"><?php echo $rsl->fields[1] ?></option><?php
+								?><option <?php echo ($r['COMANDO'] == $rsl->fields[0]) ? 'selected="selected"':'' ?> value="<?php echo $rsl->fields[0] ?>"><?php echo $rsl->fields[2] ?><?php echo ($rsl->fields[3] != '' ? ' - '.$rsl->fields[3] : '') ?></option><?php
 								$rsl->MoveNext();
 							}
 							?>

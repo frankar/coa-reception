@@ -14,14 +14,29 @@
 	$dbhost = 'localhost';
 	$dbuser = 'coa';
 	$dbpass = 'mCtA7qGNjfppY7BB';
-	$dbname = 'coa2';
+	$dbname = 'coa';
 
 	include("adodb5/adodb.inc.php");
     $db = NewADOConnection('mysql');
     $db->Connect($dbhost, $dbuser, $dbpass, $dbname);
 
+	$opzioni = array(
+	  array('id'=>1,'key'=>'nome_coa','titolo'=>'Nome C.O.A.','descrizione'=>'Inserire il nome del Centro Operativo Avanzato','classe'=>'','valore'=>'C.O.A. VENETO'),
+	  array('id'=>2,'key'=>'mail_coa','titolo'=>'E.mail C.O.A.','descrizione'=>'Inserire l\'indirizzo e-mail del COA. Servira\' come mittente per le mail in uscita dall\'applicativo','classe'=>'','valore'=>'coa.veneto@vigilfuoco.it'),
+	  array('id'=>3,'key'=>'mail_cc','titolo'=>'Indirizzi e.mail C.C.','descrizione'=>'Inserire gli indirizzi e-mail (separati da virgola) a cui inviare in copia carbone le comunicazioni del COA','classe'=>'','valore'=>'comando.cratere@vigilfuoco.it'),
+	  array('id'=>4,'key'=>'audio','titolo'=>'Messaggi Audio','descrizione'=>'Impostare 1 per abilitare i messaggi audio, 0 per non attivarli','classe'=>'','valore'=>1),
+	  array('id'=>5,'key'=>'media_days','titolo'=>'Media giorni permanenza','descrizione'=>'Indicare il numero medio di giorni di permanenza (numero intero, es: 7)','classe'=>'','valore'=>7),
+	  array('id'=>6,'key'=>'check_ver','titolo'=>'Ultima ricerca versione','descrizione'=>'Data ultimo controllo di nuova versione disponibile (normalmente non serve modificare questo valore)','classe'=>'','valore'=>'2012-08-03 22:23:23'),
+	  array('id'=>7,'key'=>'backup_freq','titolo'=>'Frequenza Backup Automatico Dati','descrizione'=>'Specificare ogni quanto tempo effettuare il backup automatico. (es: \"30 min\", \"1 hour\", \"3 day\", \"1 week\"). Specificare 0 per disabilitare il backup automatico','classe'=>'','valore'=>0),
+	  array('id'=>8,'key'=>'backup_last','titolo'=>'Ultimo backup','descrizione'=>'Data ultimo backup effettuato (normalmente non serve modificare questo valore)','classe'=>'','valore'=>'1970-01-01 00:00:00'),
+	  array('id'=>9,'key'=>'backup_path','titolo'=>'Percorso di backup','descrizione'=>'Specificare il percorso dove effettuare il backup automatico dei dati (es. \"\\\\\\\\server\\\\backupcoa\\\\\\\" opp. \"d:\\\\backup\\\\\\\"), lasciare il campo vuoto per non effettuare il backup giornaliero automatico','classe'=>'','valore'=>''),
+	  array('id'=>10,'key'=>'check_tel','titolo'=>'Controlla Numero di Telefono','descrizione'=>'Inserire 0 per disabilitare sia l\'unicita\' che l\'obbligatorieta\' del numero di telefono del personale, inserire 1 per controllare solo l\'obbligatorieta\' del numero di telefono, inserire 2 per abilitare il controllo dell\' unicita\' e obbligatorieta\' del numero di telefono','classe'=>'','valore'=>1)
+	);
+	
 	if (isset($_GET['setup'])) {
 
+		# $sql = "INSERT INTO `coa2`.`opzioni` (`id`, `key`, `titolo`, `descrizione`, `classe`, `valore`) VALUES (NULL, \'no_tel\', \'Controlla Numero di Telefono\', \'Inserire 1 per abilitare il controllo dell\'\'unicita\'\' e obbligatorieta\'\' del numero di telefono\', \'\', \'1\');";
+		
 		# Controllo la tabella opzioni:
 		$sql = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '".$dbname."' AND table_name = 'opzioni'";
 		$rs = $db->Execute($sql);
@@ -31,7 +46,7 @@
 			  `id` int(4) NOT NULL AUTO_INCREMENT,
 			  `key` varchar(40) NOT NULL,
 			  `titolo` varchar(40) NOT NULL,
-			  `descrizione` varchar(200) NOT NULL,
+			  `descrizione` varchar(300) NOT NULL,
 			  `classe` varchar(20) NOT NULL,
 			  `valore` varchar(60) NOT NULL,
 			  PRIMARY KEY (`id`)
@@ -39,21 +54,41 @@
 			";
 
 			$result = $db->Execute($sql);
-			if ($result === false) die("failed: creazione tabella opzioni".$db->ErrorMsg());
+			if ($result === false) {
+				die("failed: creazione tabella opzioni".$db->ErrorMsg());
+			} else {
+				foreach ($opzioni as $o) {
+					$sql2 = "INSERT INTO `opzioni` (
+						`key`, 
+						`titolo`, 
+						`descrizione`, 
+						`classe`, 
+						`valore`) 
+					VALUES (
+						".$db->qstr($o['key']).", 
+						".$db->qstr($o['titolo']).", 
+						".$db->qstr($o['descrizione']).", 
+						".$db->qstr($o['classe']).", 
+						".$db->qstr($o['valore'])."
+					);";
+					$result = $db->Execute($sql2);
+					if ($result === false) die("failed ".$db->ErrorMsg());
+				}
+			};
 
-			$sql = "
-			INSERT INTO `opzioni` (`id`, `key`, `titolo`, `descrizione`, `classe`, `valore`) VALUES
-			(1, 'nome_coa', 'Nome C.O.A.', 'Inserire il nome del Centro Operativo Avanzato', '', 'C.O.A. VENETO'),
-			(2, 'audio', 'Messaggi Audio', 'Impostare 1 per abilitare i messaggi audio, 0 per non attivarli', '', '1'),
-			(3, 'media_days', 'Media giorni permanenza', 'Indicare il numero medio di giorni di permanenza (numero intero, es: 7)', '', '7'),
-			(4, 'check_ver', 'Ultima ricerca versione', 'Data ultimo controllo di nuova versione disponibile (normalmente non serve modificare questo valore)', '', '1970-01-01 00:00:00'),
-			(5, 'backup_path', 'Percorso di backup', 'Specificare il percorso dove effettuare il backup automatico dei dati (es. \"\\\\\\\\\\\\\\\\server\\\\\\\\backupcoa\\\\\\\\\\\\\" opp. \"d:\\\\\\\\backup\\\\\\\\\\\\\"), lasciare il campo vuoto per non effettuare il backup giornaliero automatico.', '', ''),
-			(6, 'backup_freq', 'Frequenza Backup Automatico Dati', 'Specificare ogni quanto tempo effettuare il backup automatico. (es: \"30 min\", \"1 hour\", \"3 day\", \"1 week\"). Specificare 0 per disabilitare il backup automatico', '', '0'),
-			(7, 'backup_last', 'Ultimo backup', 'Data ultimo backup effettuato (normalmente non serve modificare questo valore)', '', '1970-01-01 00:00:00');
-			";
-
-			$result = $db->Execute($sql);
-			if ($result === false) die("failed ".$db->ErrorMsg());
+			// $sql = "
+			// INSERT INTO `opzioni` (`id`, `key`, `titolo`, `descrizione`, `classe`, `valore`) VALUES
+			// (1, 'nome_coa', 'Nome C.O.A.', 'Inserire il nome del Centro Operativo Avanzato', '', 'C.O.A. VENETO'),
+			// (2, 'audio', 'Messaggi Audio', 'Impostare 1 per abilitare i messaggi audio, 0 per non attivarli', '', '1'),
+			// (3, 'media_days', 'Media giorni permanenza', 'Indicare il numero medio di giorni di permanenza (numero intero, es: 7)', '', '7'),
+			// (4, 'check_ver', 'Ultima ricerca versione', 'Data ultimo controllo di nuova versione disponibile (normalmente non serve modificare questo valore)', '', '1970-01-01 00:00:00'),
+			// (5, 'backup_path', 'Percorso di backup', 'Specificare il percorso dove effettuare il backup automatico dei dati (es. \"\\\\\\\\\\\\\\\\server\\\\\\\\backupcoa\\\\\\\\\\\\\" opp. \"d:\\\\\\\\backup\\\\\\\\\\\\\"), lasciare il campo vuoto per non effettuare il backup giornaliero automatico.', '', ''),
+			// (6, 'backup_freq', 'Frequenza Backup Automatico Dati', 'Specificare ogni quanto tempo effettuare il backup automatico. (es: \"30 min\", \"1 hour\", \"3 day\", \"1 week\"). Specificare 0 per disabilitare il backup automatico', '', '0'),
+			// (7, 'backup_last', 'Ultimo backup', 'Data ultimo backup effettuato (normalmente non serve modificare questo valore)', '', '1970-01-01 00:00:00');
+			// ";
+			// 
+			// $result = $db->Execute($sql);
+			// if ($result === false) die("failed ".$db->ErrorMsg());
 
 		}
 
@@ -116,13 +151,30 @@
 			$sql = "
 			CREATE TABLE IF NOT EXISTS `comandi` (
 			  `id` int(8) NOT NULL AUTO_INCREMENT,
+			  `id_dir` int(8) NOT NULL,
 			  `nome` varchar(50) NOT NULL,
+			  `esteso` varchar(100) NOT NULL,
+			  `mail` varchar(50) NOT NULL,
 			  PRIMARY KEY (`id`)
 			) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 			";
 			$result = $db->Execute($sql);
 			if ($result === false) die("failed: creazione tabella comandi".$db->ErrorMsg());
-
+		}
+		// controllo le colonne aggiunte di recente
+		$a_cols = array(
+			'id_dir'=>'INT( 8 ) NOT NULL',
+			'nome'=>'varchar(50) NOT NULL',
+			'esteso'=>'varchar(100) NOT NULL',
+			'mail'=>'varchar(50) NOT NULL'
+		);
+		foreach ($a_cols as $key => $value) {
+			$sql = "SELECT * FROM information_schema.COLUMNS WHERE COLUMN_NAME= '".$key."' AND TABLE_NAME = 'comandi' AND TABLE_SCHEMA='".$dbname."';";
+			$rs = $db->Execute($sql);
+			if ($rs->RecordCount() == 0) {
+				$sql2 = "ALTER TABLE `".$dbname."`.`comandi` ADD `".$key."` ".$value.";";
+				$db->Execute($sql2);
+			}
 		}
 
 		# Controllo la tabella anagrafica:
@@ -189,15 +241,49 @@
 		}
 	}
 
-	$sql = "SELECT * FROM `opzioni`";
+	$sql = "SELECT `key`, `valore` FROM `opzioni`";
 	$result = $db->Execute($sql);
 	if ($result === false) die("Errore sul database: Prova a seguire questo link: <a href='index.php?setup=1'>Inizializza Opzioni</a>");
 	$options = array();
 	while (!$result->EOF) {
 		$r_ass = $result->GetRowAssoc();
+		// print_r($r_ass);
+		// exit;
 		$options[$r_ass['KEY']] = $r_ass['VALORE'];
 		$result->MoveNext();
 	}
+	
+	
+	$a_keys = array_keys($options);
+	// print_r($a_keys);
+	// exit;
+	
+	foreach($opzioni as $o) {
+		if (array_search($o['key'], $a_keys) === FALSE) {
+			// echo $o['key']."<br />";
+			// print_r( $a_keys );
+			// exit;
+			$sql2 = "INSERT INTO `opzioni` (
+				`key`, 
+				`titolo`, 
+				`descrizione`, 
+				`classe`, 
+				`valore`) 
+			VALUES (
+				".$db->qstr($o['key']).", 
+				".$db->qstr($o['titolo']).", 
+				".$db->qstr($o['descrizione']).", 
+				".$db->qstr($o['classe']).", 
+				".$db->qstr($o['valore'])."
+			);";
+			$result = $db->Execute($sql2);
+			if ($result === false) die("failed ".$db->ErrorMsg());
+			
+			// inserisco in $options
+			$options[$o['key']] = $o['valore'];
+		}
+	}
+	unset($opzioni);
 
 	//$oggi = date('j'); 
 

@@ -41,13 +41,13 @@
 		$data_timestamp = mktime(0,0,0,$a_data[1],$a_data[0],$a_data[2]);
 		$d_out_pres = date("Y-m-d H:i:s",$data_timestamp);
 
-		if ($tel == '') {
+		if ($tel == '' and intval($options['check_tel']) > 0) {
 			$message_class = "ko";
 			$message = "Il numero telefonico e' un campo obbligatorio";
 		} else {
 			$sql = "SELECT count(*) FROM `anagrafica` WHERE data_out = '1970-01-01 00:00:00' AND tel = '".$tel."';";
 			$rs_cod = $db->Execute($sql);
-			if ($rs_cod->fields[0] < 1) {
+			if ($rs_cod->fields[0] < 1 or intval($options['check_tel']) < 2) {
 
 				$sql = "INSERT INTO `anagrafica` (
 				`nome`,
@@ -83,6 +83,7 @@
 				}
 
 			} else {
+				$message_class = "ko";
 				$message = "Errore: Record gia' presente in archivio, verifica l'unicita' del numero telefonico !";
 			}
 
@@ -123,12 +124,50 @@
 		<form id="form5" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="post" accept-charset="utf-8">
 			<p class="evidente"><label for="nome_comando">Sigla:</label>
 			<input type="text" name="nome_comando" id="nome_comando" />
+
+			<p class="evidente"><label for="nome_es_comando">Nome:</label>
+			<input type="text" name="nome_es_comando" id="nome_es_comando" />
+
+			<p class="evidente"><label for="mail_comando">E.mail:</label>
+			<input type="text" name="mail_comando" id="mail_comando" />
+			
+			<p class="evidente"><label for="dir">Direzione di appartenenza</label>
+				<select name="dir" id="dir" size="1">
+					<?php
+					$sql = "SELECT id, nome, esteso FROM comandi where id = id_dir ORDER BY nome;";
+					$rsl = $db->Execute($sql);
+					$r = $rsl->GetRowAssoc();
+					while (!$rsl->EOF) {
+						?><option value="<?php echo $rsl->fields[0] ?>"><?php echo $rsl->fields[1] ?></option><?php
+						$rsl->MoveNext();
+					}
+					?>
+				</select> <span class="button2" id="add_dir">Aggiungi Direzione</span></p>
+			
 			<input type="hidden" name="inviato_comando" value="1" /></p>
 			<p><span class="button">Aggiungi Nome Comando</span></p>
 
 		</form>
 	</div>
 
+	<div id="new_direzione">
+		<h2>Nuova Direzione</h2>
+		<form id="form6" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="post" accept-charset="utf-8">
+			<p class="evidente"><label for="nome_direzione">Sigla:</label>
+			<input type="text" name="nome_direzione" id="nome_direzione" />
+
+			<p class="evidente"><label for="nome_es_direzione">Nome:</label>
+			<input type="text" name="nome_es_direzione" id="nome_es_direzione" />
+
+			<p class="evidente"><label for="mail_direzione">E.mail:</label>
+			<input type="text" name="mail_direzione" id="mail_direzione" />
+			
+			<input type="hidden" name="inviato_direzione" value="1" /></p>
+			<p><span class="button">Aggiungi Direzione</span></p>
+
+		</form>
+	</div>
+	
 	<div id="new_mansione">
 		<h2>Nuova mansione</h2>
 		<form id="form6" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="post" accept-charset="utf-8">
@@ -168,11 +207,11 @@
 		<p class="evidente"><label for="qual">Comando di provenienza</label>
 			<select name="com" id="com" size="1">
 				<?php
-				$sql = "SELECT * FROM comandi ORDER BY nome;";
+				$sql = "SELECT id, nome, esteso FROM comandi ORDER BY nome;";
 				$rsl = $db->Execute($sql);
 				$r = $rsl->GetRowAssoc();
 				while (!$rsl->EOF) {
-					?><option <?php echo ($r['NOME'] == $rsl->fields[0]) ? 'selected="selected"':'' ?>value="<?php echo $rsl->fields[0] ?>"><?php echo $rsl->fields[1] ?></option><?php
+					?><option value="<?php echo $rsl->fields[0] ?>"><?php echo $rsl->fields[1] ?><?php echo ($rsl->fields[2] != '' ? ' - '.$rsl->fields[2] : '') ?></option><?php
 					$rsl->MoveNext();
 				}
 				?>
@@ -200,7 +239,7 @@
 				?>
 			</select> <span class="button" id="add_mansione">Aggiungi Mansione</span></p>
 
-		<p><input type="hidden" id="inviato" name="inviato" value="1" />
+		<p class="evidente"><input type="hidden" id="inviato" name="inviato" value="1" />
 			<input type="submit" value="Invia &rarr;" />
 		</p>
 	</form>
