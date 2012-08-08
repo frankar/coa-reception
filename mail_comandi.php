@@ -223,62 +223,68 @@ if (isset($_POST['inviato'])) {
 					if (array_key_exists('I',$vc)) $in = TRUE;
 					if (array_key_exists('U',$vc)) $out = TRUE;
 					
-					// Mail ai comandi
-					$txtcom = "Si comunica che in data odierna ";	
-					$objcom = "PROVA Comunicazione ";
+					// controllo che non sia una direzione
+					if(strtoupper(substr($vc['sigla'], 0 , 3)) != 'DIR') {
 					
-					if (array_key_exists('I',$vc)) {
-						$objcom .= "Ingressi ";
-						$txtcom .= "e' ARRIVATO presso questo C.O.A. il seguente personale dal Vostro Comando:\r\n";
-						foreach ($vc['I'] as $p => $detail) {
-							$txtcom .= $detail['qual']." ".$detail['cognome']." ".$detail['nome']."\r\n";
+						// Mail ai comandi
+						$txtcom = "Si comunica che in data odierna ";	
+						$objcom = "PROVA Comunicazione ";
+
+						if (array_key_exists('I',$vc)) {
+							$objcom .= "Ingressi ";
+							$txtcom .= "e' ARRIVATO presso questo C.O.A. il seguente personale dal Vostro Comando:\r\n";
+							foreach ($vc['I'] as $p => $detail) {
+								$txtcom .= $detail['qual']." ".$detail['cognome']." ".$detail['nome']."\r\n";
+							}
+							if (array_key_exists('U',$vc)) {
+								$objcom .= "e ";
+								$txtcom .= "\r\ninoltre ";
+							}
+
 						}
 						if (array_key_exists('U',$vc)) {
-							$objcom .= "e ";
-							$txtcom .= "\r\ninoltre ";
+							$objcom .= "Uscite dal ";
+							$txtcom .= "e' PARTITO da questo C.O.A. verso il vostro Comando il seguente personale:\r\n";
+							foreach ($vc['U'] as $p => $detail) {
+								$txtcom .= $detail['qual']." ".$detail['cognome']." ".$detail['nome']."\r\n";
+							}
 						}
-						
-					}
-					if (array_key_exists('U',$vc)) {
-						$objcom .= "Uscite dal ";
-						$txtcom .= "e' PARTITO da questo C.O.A. verso il vostro Comando il seguente personale:\r\n";
-						foreach ($vc['U'] as $p => $detail) {
-							$txtcom .= $detail['qual']." ".$detail['cognome']." ".$detail['nome']."\r\n";
-						}
-					}
 
-					$objcom .= "COA del giorno ". $_POST['data']."\r\n";
+						$objcom .= "COA del giorno ". $_POST['data']."\r\n";
 
-					$destinatario = $vc['mail'];
-					//$destinatario = "test.test@vigilfuoco.it";
+						$destinatario = $vc['mail'];
+						//$destinatario = "test.test@vigilfuoco.it";
+
+
+
+						$intestazioni = "From: ".$options['nome_coa']. " <".$options['mail_coa'].">";
+						$intestazioni .= "\r\nReply-To: ".$options['mail_coa'];
+						//$intestazioni .= "\r\nCc: ".$options['mail_cc'];
+						$intestazioni .= "\r\nBcc: ".$options['mail_coa'];
+						$intestazioni .= "\r\nX-Mailer: PHP/" . phpversion();
+						$intestazioni .= "\r\n";
+
+						// costruisco il corpo del messaggio
+						$corpo = "Mail inviata da: ". $options['nome_coa'];
+						$corpo .= " (". $options['mail_coa'] . ")\r\n";
+						$corpo .= "Destinatario: ". $vc['nome']. " ".$vc['sigla']." (".$vc['mail'].")\r\n";
+						$corpo .= "Oggetto messaggio: " . $objcom ."\r\n";
+						$corpo .= "Testo messaggio: \r\n";
+						$corpo .= $txtcom . "\r\n";
+						$corpo .= "\r\n---------------------------------------------\r\n";
+						$corpo .= "Email inviata automaticamente tramite programma di gestione reception COA\r\n";
+
+						// se l'invio va a buon fine do un messaggio positivo 
+						if (mail($destinatario, $objcom, $corpo, $intestazioni)) {
+							$message .= "E.mail inviata correttamente al Comando di ".$vc['nome']."<br />";
+						// altrimenti do un mesaggio di mancato invio
+						} else {
+							$message .= "Errore nell'invio della mail a :".$vc['nome']."<br />";
+							$message_class = 'ko';
+						}						
+					}
 					
-					
 
-					$intestazioni = "From: ".$options['nome_coa']. " <".$options['mail_coa'].">";
-					$intestazioni .= "\r\nReply-To: ".$options['mail_coa'];
-					//$intestazioni .= "\r\nCc: ".$options['mail_cc'];
-					$intestazioni .= "\r\nBcc: ".$options['mail_coa'];
-					$intestazioni .= "\r\nX-Mailer: PHP/" . phpversion();
-					$intestazioni .= "\r\n";
-
-					// costruisco il corpo del messaggio
-					$corpo = "Mail inviata da: ". $options['nome_coa'];
-					$corpo .= " (". $options['mail_coa'] . ")\r\n";
-					$corpo .= "Destinatario: ". $vc['nome']. " ".$vc['sigla']." (".$vc['mail'].")\r\n";
-					$corpo .= "Oggetto messaggio: " . $objcom ."\r\n";
-					$corpo .= "Testo messaggio: \r\n";
-					$corpo .= $txtcom . "\r\n";
-					$corpo .= "\r\n---------------------------------------------\r\n";
-					$corpo .= "Email inviata automaticamente tramite programma di gestione reception COA\r\n";
-
-					// se l'invio va a buon fine do un messaggio positivo 
-					if (mail($destinatario, $objcom, $corpo, $intestazioni)) {
-						$message .= "E.mail inviata correttamente al Comando di ".$vc['nome']."<br />";
-					// altrimenti do un mesaggio di mancato invio
-					} else {
-						$message .= "Errore nell'invio della mail a :".$vc['nome']."<br />";
-						$message_class = 'ko';
-					}
 					// fine invio ai comandi
 				}
 				
