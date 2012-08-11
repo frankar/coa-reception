@@ -13,7 +13,7 @@
 	//dati di accesso a mysql e al db
 	$dbhost = 'localhost';
 	$dbuser = 'coa';
-	$dbpass = 'mCtA7qGNjfppY7BB';
+	$dbpass = '123456';
 	$dbname = 'coa';
 
 	include("adodb5/adodb.inc.php");
@@ -48,7 +48,7 @@
 			  `titolo` varchar(40) NOT NULL,
 			  `descrizione` varchar(300) NOT NULL,
 			  `classe` varchar(20) NOT NULL,
-			  `valore` varchar(60) NOT NULL,
+			  `valore` varchar(200) NOT NULL,
 			  PRIMARY KEY (`id`)
 			) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 			";

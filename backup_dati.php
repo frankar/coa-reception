@@ -7,6 +7,8 @@ $tables_drop = array_reverse($tables);
 
 $r = 'SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";'."\n\n";
 
+$r .= "USE `".$dbname."`;"."\n\n";
+
 foreach($tables_drop as $table) {
 	$r.= 'DROP TABLE IF EXISTS `'.$table.'`;'."\n\n";
 }

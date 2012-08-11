@@ -74,7 +74,7 @@
 </script>
 <?php include("menu.php"); ?>
 	<?php
-		$sql = "SELECT a.id,q.sigla as qual,a.nome,a.cognome,c.nome AS comando, a.tel, m.nome AS mansione, a.tenda, a.data_in, a.data_out FROM anagrafica AS a INNER JOIN comandi AS c ON a.comando = c.id INNER JOIN mansioni as m ON a.idmansione = m.id INNER JOIN qualifica as q ON a.idqual = q.id WHERE a.data_out <> '1970-01-01 00:00:00' ORDER BY a.data_out DESC";
+		$sql = "SELECT a.id,q.sigla as qual,a.nome,a.cognome,c.esteso AS comando, a.tel, m.nome AS mansione, a.tenda, a.data_in, a.data_out FROM anagrafica AS a INNER JOIN comandi AS c ON a.comando = c.id INNER JOIN mansioni as m ON a.idmansione = m.id INNER JOIN qualifica as q ON a.idqual = q.id WHERE a.data_out <> '1970-01-01 00:00:00' ORDER BY a.data_out DESC";
 
 	?>
 

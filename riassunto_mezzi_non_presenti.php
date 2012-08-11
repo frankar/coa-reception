@@ -74,7 +74,7 @@
 </script>
 <?php include("menu.php"); ?>
 	<?php
-		$sql = "SELECT m.id, t.nome AS tipo, m.targa, a.id AS id_resp, a.nome AS nome_resp, a.cognome AS cognome_resp, c.nome AS comando, m.data_in, m.data_out FROM mezzi AS m INNER JOIN tipi_mezzi AS t ON t.id = m.id_tipo INNER JOIN anagrafica AS a ON m.id_resp = a.id INNER JOIN comandi as c ON m.id_comando = c.id WHERE m.data_out <> '1970-01-01 00:00:00' ORDER BY m.data_out DESC";
+		$sql = "SELECT m.id, t.nome AS tipo, m.targa, a.id AS id_resp, a.nome AS nome_resp, a.cognome AS cognome_resp, c.esteso AS comando, m.data_in, m.data_out FROM mezzi AS m INNER JOIN tipi_mezzi AS t ON t.id = m.id_tipo INNER JOIN anagrafica AS a ON m.id_resp = a.id INNER JOIN comandi as c ON m.id_comando = c.id WHERE m.data_out <> '1970-01-01 00:00:00' ORDER BY m.data_out DESC";
 	?>
 
 	<h2>Esportazione Mezzi Usciti dal COA per Excel</h2>

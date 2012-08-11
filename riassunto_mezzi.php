@@ -73,9 +73,7 @@
 </script>
 <?php include("menu.php"); ?>
 	<?php
-		// $sql = "SELECT a.id, a.nome, a.provenienza, a.codice, l.nome AS livello, pe.nome AS periodo, p.n_pasti FROM `anagrafica` AS a INNER JOIN `livelli` AS l ON a.livello = l.id INNER JOIN periodo AS pe ON a.periodo = pe.id LEFT JOIN (SELECT id, COUNT(*) AS n_pasti FROM `pasti` GROUP BY id) AS p ON a.id = p.id;"
-		//$sql = "SELECT a.id, a.nome, a.cognome, c.nome AS comando, a.tel, a.tenda, a.data_in, a.data_out FROM anagrafica AS a INNER JOIN comandi AS c ON a.comando = c.id ORDER BY a.data DESC";
-		$sql = "SELECT m.id, t.nome AS tipo, m.targa, a.id AS id_resp, a.nome AS nome_resp, a.cognome AS cognome_resp, c.nome AS comando, m.data_in FROM mezzi AS m INNER JOIN tipi_mezzi AS t ON t.id = m.id_tipo INNER JOIN anagrafica AS a ON m.id_resp = a.id INNER JOIN comandi as c ON m.id_comando = c.id WHERE m.data_out = '1970-01-01 00:00:00' ORDER BY m.data_in DESC";
+		$sql = "SELECT m.id, t.nome AS tipo, m.targa, a.id AS id_resp, a.nome AS nome_resp, a.cognome AS cognome_resp, c.esteso AS comando, m.data_in FROM mezzi AS m INNER JOIN tipi_mezzi AS t ON t.id = m.id_tipo INNER JOIN anagrafica AS a ON m.id_resp = a.id INNER JOIN comandi as c ON m.id_comando = c.id WHERE m.data_out = '1970-01-01 00:00:00' ORDER BY m.data_in DESC";
 	?>
 
 	<h2>Esportazione dati sugli automezzi presenti per Excel</h2>
