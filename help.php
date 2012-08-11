@@ -317,5 +317,13 @@ if (isset($_REQUEST['p'])) {
 
 	<p>Per accedere all'ultima versione disponibile clicca <a href="https://github.com/frankar/coa-reception/zipball/master">qui</a></p>
 
+	<p>Questo applicativo e' stato testato su:
+		<ul>
+			<li><a href="http://www.wampserver.com/en/">Wamp Server</a> su PC con Windows XP e su PC con Windows Seven. Per l'invio delle mail si e' aggiunto questo <a href="http://glob.com.au/sendmail/">Sendmail</a></li>
+			<li><a href="http://www.mamp.info">MAMP Server</a> su MacBook con OS-X</li>
+			<li>Linux Debian installato in un server minimale dalle dimensioni di una carta di credito: <a href="http://www.raspberrypi.org/">Raspberry PI</a>. Questo approcio potrebbe tornare utile per l'utilizzo su automezzi tipo UCL in quanto di ridottissime dimensioni ed alimentabile con una comune presa USB</li>
+		</ul>
+	</p>
+
 <?php } ?>
 <?php include("footer.php");  ?>
