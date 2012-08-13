@@ -401,3 +401,7 @@ table.riepilogo td table.pretty-table caption {
     text-align:center;
     padding-top: 1em;
 }
+
+.hide {
+    display: none;
+}

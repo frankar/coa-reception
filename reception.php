@@ -11,6 +11,27 @@
 	
 	// controllo le request
 
+	if (isset($_REQUEST['action'])) {
+		if($_REQUEST['action'] == 'del') {
+			$id_target = sanitize($_GET['id']);
+			$sql = "SELECT COUNT(*) FROM mezzi WHERE id_resp = '".$id_target."';";
+			$rs = $db->Execute($sql);
+			if ($rs->fields[0] > 0) {
+				$message = 'Impossibile eliminare il nominativo in quanto <strong>'.$rs->fields[0]."</strong> ".($rs->fields[0] > 1 ? "mezzi sono associati" : "mezzo e' associato")." a questo nominativo !";
+				$message_class = "ko";
+			} else {
+				$sql = "DELETE FROM `anagrafica` WHERE `anagrafica`.`id` = '".$id_target."';";
+				if ($db->Execute($sql) === false) {
+					$message = 'error deleting: '.$db->ErrorMsg().'<br />';
+					$message_class = "ko";
+					break;
+				} else {
+					$message = "Eliminazione nominativo avvenuta con successo";
+				}
+			}
+		}
+	}
+
 	if (isset($_POST['inviato'])) {
 		$inviato = $_POST['inviato'];
 	} else {
@@ -267,7 +288,9 @@
 				for ($i=0, $max=$result->FieldCount(); $i < $max; $i++) {
 					?><td><?php echo $result->fields[$i] ?></td><?php
 				}
-				?><td><a href="dettagli.php?id=<?php echo $result->fields[0] ?>">Modifica</a></td></tr><?php
+				?><td><a title="Modifica" href="dettagli.php?id=<?php echo $result->fields[0] ?>"><img src="css/edit-icon.png" alt="Modifica" /></a>
+					<a onClick="return confirmSubmit($(this))" href="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>?action=del&amp;id=<?php echo $result->fields[0] ?>" title="Elimina"><img src="css/del-icon.png" alt="Elimina" /></a>
+				  </td></tr><?php
 			   $result->MoveNext();
 			}
 		?></table>  

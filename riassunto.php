@@ -4,25 +4,24 @@
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
 		$('#tab_anag').dataTable({
-				"aaSorting": [],
-				"bPaginate": false,
-		        "bFilter": true,
-		        "bAutoWidth": false,
-		        "oLanguage": {
-		            "sLengthMenu": "Mostra _MENU_ righe per pagina",
-		            "sZeroRecords": "Nessun record trovato !",
-		            "sInfo": "Stai vedendo dalla riga _START_ alla riga _END_ di _TOTAL_ totali",
-		            "sInfoEmpty": "Stai vedendo dalla riga 0 alla riga 0 di 0 totali",
-		            "sInfoFiltered": "(filtered from _MAX_ total records)",
-					"sSearch": "Cerca nella tabella:",
-					"oPaginate": {
-						"sNext": "Prossima pagina",
-						"sPrevious": "Pagina precedente",
-						"sFirst": "Prima pagina",
-						"sLast": "Last page"
-					}
-		        }
-		
+			"aaSorting": [],
+			"bPaginate": true,
+	        "bFilter": true,
+	        "bAutoWidth": false,
+	        "oLanguage": {
+	            "sLengthMenu": "Mostra _MENU_ righe per pagina",
+	            "sZeroRecords": "Nessun record trovato !",
+	            "sInfo": "Stai vedendo dalla riga _START_ alla riga _END_ di _TOTAL_ totali",
+	            "sInfoEmpty": "Stai vedendo dalla riga 0 alla riga 0 di 0 totali",
+	            "sInfoFiltered": "(filtered from _MAX_ total records)",
+				"sSearch": "Cerca nella tabella:",
+				"oPaginate": {
+					"sNext": "Prossima pagina",
+					"sPrevious": "Pagina precedente",
+					"sFirst": "Prima pagina",
+					"sLast": "Last page"
+				}
+	        }
 		});
 		$('#tab_anag_filter input').focus();
 		$("#excel #genera_csv").click(function(e) {
@@ -39,7 +38,6 @@
 					});
 					$("#excel p.red").remove();
 					$("#excel").append('<p class="red">Ora puoi copiare i dati CSV con CTRL+C per poi incollarli in un\'altra applicazione</p>')
-										
 				},
 				error: function() {
 					alert("Chiamata fallita, si prega di riprovare...");

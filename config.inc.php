@@ -75,21 +75,6 @@
 					if ($result === false) die("failed ".$db->ErrorMsg());
 				}
 			};
-
-			// $sql = "
-			// INSERT INTO `opzioni` (`id`, `key`, `titolo`, `descrizione`, `classe`, `valore`) VALUES
-			// (1, 'nome_coa', 'Nome C.O.A.', 'Inserire il nome del Centro Operativo Avanzato', '', 'C.O.A. VENETO'),
-			// (2, 'audio', 'Messaggi Audio', 'Impostare 1 per abilitare i messaggi audio, 0 per non attivarli', '', '1'),
-			// (3, 'media_days', 'Media giorni permanenza', 'Indicare il numero medio di giorni di permanenza (numero intero, es: 7)', '', '7'),
-			// (4, 'check_ver', 'Ultima ricerca versione', 'Data ultimo controllo di nuova versione disponibile (normalmente non serve modificare questo valore)', '', '1970-01-01 00:00:00'),
-			// (5, 'backup_path', 'Percorso di backup', 'Specificare il percorso dove effettuare il backup automatico dei dati (es. \"\\\\\\\\\\\\\\\\server\\\\\\\\backupcoa\\\\\\\\\\\\\" opp. \"d:\\\\\\\\backup\\\\\\\\\\\\\"), lasciare il campo vuoto per non effettuare il backup giornaliero automatico.', '', ''),
-			// (6, 'backup_freq', 'Frequenza Backup Automatico Dati', 'Specificare ogni quanto tempo effettuare il backup automatico. (es: \"30 min\", \"1 hour\", \"3 day\", \"1 week\"). Specificare 0 per disabilitare il backup automatico', '', '0'),
-			// (7, 'backup_last', 'Ultimo backup', 'Data ultimo backup effettuato (normalmente non serve modificare questo valore)', '', '1970-01-01 00:00:00');
-			// ";
-			// 
-			// $result = $db->Execute($sql);
-			// if ($result === false) die("failed ".$db->ErrorMsg());
-
 		}
 
 		# Controllo la tabella tipi_mezzi:
@@ -149,13 +134,15 @@
 		$rs = $db->Execute($sql);
 		if ((int)$rs->fields[0] < 1) {
 			$sql = "
-			CREATE TABLE IF NOT EXISTS `comandi` (
+			CREATE TABLE `comandi` (
 			  `id` int(8) NOT NULL AUTO_INCREMENT,
-			  `id_dir` int(8) NOT NULL,
 			  `nome` varchar(50) NOT NULL,
+			  `id_dir` int(8) DEFAULT NULL,
 			  `esteso` varchar(100) NOT NULL,
 			  `mail` varchar(50) NOT NULL,
-			  PRIMARY KEY (`id`)
+			  PRIMARY KEY (`id`),
+			  KEY `id_dir` (`id_dir`),
+			  CONSTRAINT `comandi_ibfk_1` FOREIGN KEY (`id_dir`) REFERENCES `comandi` (`id`)
 			) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 			";
 			$result = $db->Execute($sql);
@@ -247,8 +234,6 @@
 	$options = array();
 	while (!$result->EOF) {
 		$r_ass = $result->GetRowAssoc();
-		// print_r($r_ass);
-		// exit;
 		$options[$r_ass['KEY']] = $r_ass['VALORE'];
 		$result->MoveNext();
 	}

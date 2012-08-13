@@ -237,7 +237,7 @@
 				for ($i=0, $max=$result->FieldCount(); $i < $max; $i++) {
 					?><td><?php echo $result->fields[$i] ?></td><?php
 				}
-				?><td><a href="dettagli_mezzi.php?id=<?php echo $result->fields[0] ?>">Modifica</a></td></tr><?php
+				?><td><a title="Modifica" href="dettagli_mezzi.php?id=<?php echo $result->fields[0] ?>"><img src="css/edit-icon.png" alt="Modifica" /></a></td></tr><?php
 			   $result->MoveNext();
 			}
 		?></table>  

@@ -294,3 +294,11 @@ function sort_select(select_id) {
         $dd.val(selectedVal);
     }
 }
+
+function confirmSubmit(questo) {
+    var agree=confirm("Sicuro di voler eliminare dall'archivio "+questo.closest('tr').find('td:nth-child(3)').text()+" "+questo.closest('tr').find('td:nth-child(2)').text()+" ?");
+    if (agree)
+    	return true ;
+    else
+    	return false ;
+}

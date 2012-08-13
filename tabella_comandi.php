@@ -141,7 +141,6 @@ if (isset($_REQUEST['action'])) {
 			?><th><?php echo $fld ?></th><?php
 		}
 		?><th>Azioni</th>
-		
 	</tr></thead><tbody>
 	<?php
 	while (!$rs->EOF) {

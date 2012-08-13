@@ -17,9 +17,13 @@ if (isset($_POST['inviato'])) {
 			$d_mail = date("Y-m-d H:i:s",$data_timestamp);
 
 			$sql = "SELECT c.id, c.nome, c.esteso, c.mail FROM comandi AS c INNER JOIN anagrafica AS a ON a.comando = c.id WHERE (a.data_in >= ".$db->qstr($d_mail)." and a.data_in < ".$db->qstr($d_mail)." + interval 1 day) OR (a.data_out >= ".$db->qstr($d_mail)." and a.data_out < ".$db->qstr($d_mail)." + interval 1 day) GROUP BY comando ";
-			$sql .= "UNION ";
-			$sql .= "SELECT c.id, c.nome, c.esteso, c.mail FROM comandi AS c INNER JOIN mezzi AS m ON m.id_comando = c.id WHERE (m.data_in >= ".$db->qstr($d_mail)." and m.data_in < ".$db->qstr($d_mail)." + interval 1 day) OR (m.data_out >= ".$db->qstr($d_mail)." and m.data_out < ".$db->qstr($d_mail)." + interval 1 day) GROUP BY id_comando ";
+			// Aggiungo query sui mezzi
+			// $sql .= "UNION ";
+			// $sql .= "SELECT c.id, c.nome, c.esteso, c.mail FROM comandi AS c INNER JOIN mezzi AS m ON m.id_comando = c.id WHERE (m.data_in >= ".$db->qstr($d_mail)." and m.data_in < ".$db->qstr($d_mail)." + interval 1 day) OR (m.data_out >= ".$db->qstr($d_mail)." and m.data_out < ".$db->qstr($d_mail)." + interval 1 day) GROUP BY id_comando ";
 
+			// echo $sql;
+			// exit;
+			
 			$rs = $db->Execute($sql);
 
 			if ($rs->RecordCount() > 0) {
@@ -64,8 +68,11 @@ if (isset($_POST['inviato'])) {
 
 			// modifico i dati dei comandi
 			$sql = "SELECT c.id FROM comandi AS c INNER JOIN anagrafica AS a ON a.comando = c.id WHERE (a.data_in >= ".$db->qstr($d_mail)." and a.data_in < ".$db->qstr($d_mail)." + interval 1 day) OR (a.data_out >= ".$db->qstr($d_mail)." and a.data_out < ".$db->qstr($d_mail)." + interval 1 day) GROUP BY comando ";
-			$sql .= "UNION ";
-			$sql .= "SELECT c.id FROM comandi AS c INNER JOIN mezzi AS m ON m.id_comando = c.id WHERE (m.data_in >= ".$db->qstr($d_mail)." and m.data_in < ".$db->qstr($d_mail)." + interval 1 day) OR (m.data_out >= ".$db->qstr($d_mail)." and m.data_out < ".$db->qstr($d_mail)." + interval 1 day) GROUP BY id_comando ";
+
+			// Aggiungo i movimenti dei mezzi
+			// $sql .= "UNION ";
+			// $sql .= "SELECT c.id FROM comandi AS c INNER JOIN mezzi AS m ON m.id_comando = c.id WHERE (m.data_in >= ".$db->qstr($d_mail)." and m.data_in < ".$db->qstr($d_mail)." + interval 1 day) OR (m.data_out >= ".$db->qstr($d_mail)." and m.data_out < ".$db->qstr($d_mail)." + interval 1 day) GROUP BY id_comando ";
+
 			$rs = $db->Execute($sql);
 			while (!$rs->EOF) {
 				$sql = "UPDATE comandi SET nome = '".$_POST['sigla_'.$rs->fields[0]]."', esteso = '".$_POST['nome_'.$rs->fields[0]]."', mail = '".$_POST['email_'.$rs->fields[0]]."' WHERE id = '".$rs->fields[0]."';";
@@ -73,13 +80,13 @@ if (isset($_POST['inviato'])) {
 				$rs->MoveNext();
 			}
 
-			//$all = array();
+			// Creo l'array per le direzioni $ad
 			$ad = array();
 			$sql = "SELECT c.id, c.nome, c.esteso, c.mail, c.id_dir, d.esteso, d.mail FROM comandi AS c INNER JOIN comandi AS d ON c.id_dir = d.id INNER JOIN anagrafica AS a ON a.comando = c.id WHERE (a.data_in >= ".$db->qstr($d_mail)." and a.data_in < ".$db->qstr($d_mail)." + interval 1 day) OR (a.data_out >= ".$db->qstr($d_mail)." and a.data_out < ".$db->qstr($d_mail)." + interval 1 day) GROUP BY comando ";
 			$rs = $db->Execute($sql);
 			while (!$rs->EOF) {
 				
-				// inserisco la direzione
+				// inserisco i dati della direzione
 				if(!array_key_exists($rs->fields[4],$ad)) {
 					$ad[$rs->fields[4]]['nome'] = $rs->fields[5];
 					$ad[$rs->fields[4]]['mail'] = $rs->fields[6];
@@ -90,15 +97,18 @@ if (isset($_POST['inviato'])) {
 					'mail' => $rs->fields[3]
 					);
 				
-					// INGRESSI
+				// INGRESSI
 				$sql2 = "SELECT q.sigla as qual, a.nome, a.cognome FROM anagrafica as a INNER JOIN qualifica AS q ON a.idqual = q.id WHERE (a.data_in >= ".$db->qstr($d_mail)." AND a.data_in < ".$db->qstr($d_mail)." + interval 1 day) AND (comando = '".$rs->fields[0]."') ORDER BY cognome";
 				$rs2 = $db->Execute($sql2);
 				if ($rs2->RecordCount() > 0) {
 						while (!$rs2->EOF) {
+							// preparo l'array per i dettagli di una persona
 								$a_person = array();
 								for ($i=0; $i < $rs2->FieldCount(); $i++) {
+									// inserisco un dettaglio
 									$a_person[$rs2->FetchField($i)->name] = $rs2->Fields($i);
 								}
+								// aggiungo la persona all'array generale
 								$ad[$rs->fields[4]]['com'][$rs->fields[0]]['I'][] = $a_person;
 							$rs2->MoveNext();
 						}
@@ -214,7 +224,7 @@ if (isset($_POST['inviato'])) {
 
 			foreach ($ad as $k => $v) {
 				$testo = "Si comunica che in data odierna ";	
-				$oggetto = "PROVA Comunicazione ";
+				$oggetto = "Comunicazione ";
 				
 				// Controllo se a livello direzione ci sono stati ingressi o uscite
 				$in = FALSE;
@@ -228,7 +238,7 @@ if (isset($_POST['inviato'])) {
 					
 						// Mail ai comandi
 						$txtcom = "Si comunica che in data odierna ";	
-						$objcom = "PROVA Comunicazione ";
+						$objcom = "Comunicazione ";
 
 						if (array_key_exists('I',$vc)) {
 							$objcom .= "Ingressi ";
@@ -254,6 +264,7 @@ if (isset($_POST['inviato'])) {
 
 						$destinatario = $vc['mail'];
 						//$destinatario = "test.test@vigilfuoco.it";
+						//$destinatario = "franco@carinato.net";
 
 
 
@@ -266,8 +277,9 @@ if (isset($_POST['inviato'])) {
 
 						// costruisco il corpo del messaggio
 						$corpo = "Mail inviata da: ". $options['nome_coa'];
-						$corpo .= " (". $options['mail_coa'] . ")\r\n";
-						$corpo .= "Destinatario: ". $vc['nome']. " ".$vc['sigla']." (".$vc['mail'].")\r\n";
+						$corpo .= " (". $options['mail_coa'] . ") ";
+						$corpo .= "IP: ".$HTTP_SERVER_VARS['REMOTE_ADDR']."\r\n";
+						$corpo .= "Destinatario: Comando ". $vc['nome']. " ".$vc['sigla']." (".$vc['mail'].")\r\n";
 						$corpo .= "Oggetto messaggio: " . $objcom ."\r\n";
 						$corpo .= "Testo messaggio: \r\n";
 						$corpo .= $txtcom . "\r\n";
@@ -322,9 +334,8 @@ if (isset($_POST['inviato'])) {
 
 				$destinatario = $v['mail'];
 				//$destinatario = "test.test@vigilfuoco.it";
+				//$destinatario = "franco@carinato.net";
 				
-				
-
 				$intestazioni = "From: ".$options['nome_coa']. " <".$options['mail_coa'].">";
 				$intestazioni .= "\r\nReply-To: ".$options['mail_coa'];
 				$intestazioni .= "\r\nCc: ".$options['mail_cc'];
@@ -334,7 +345,8 @@ if (isset($_POST['inviato'])) {
 
 				// costruisco il corpo del messaggio
 				$corpo = "Mail inviata da: ". $options['nome_coa'];
-				$corpo .= " (". $options['mail_coa'] . ")\r\n";
+				$corpo .= " (". $options['mail_coa'] . ") ";
+				$corpo .= "IP: ".$HTTP_SERVER_VARS['REMOTE_ADDR']."\r\n";
 				$corpo .= "Destinatario: ". $v['nome']." (".$v['mail'].")\r\n";
 				$corpo .= "Oggetto messaggio: " . $oggetto ."\r\n";
 				$corpo .= $testo . "\r\n";

@@ -5,7 +5,7 @@
 	$(document).ready(function() {
 		$('#tab_anag').dataTable({
 			"aaSorting": [],
-			"bPaginate": false,
+			"bPaginate": true,
 	        "bFilter": true,
 	        "bAutoWidth": false,
 	        "oLanguage": {

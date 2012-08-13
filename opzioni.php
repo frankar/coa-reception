@@ -23,8 +23,8 @@
 	while (!$result->EOF) {
 		$r_ass = $result->GetRowAssoc();
 		?>
-		<p><label for="opz-<?php echo $r_ass['ID'] ?>"><?php echo sanitize($r_ass['TITOLO']) ?>:<span><?php echo sanitize($r_ass['DESCRIZIONE']) ?></span></label>
-			<input<?php echo ($r_ass['CLASSE'] == '') ? '' : " class=".$r_ass['CLASSE'] ?> value="<?php echo sanitize($r_ass['VALORE']) ?>" type="text" name="<?php echo sanitize($r_ass['KEY']) ?>" id="opz-<?php echo $r_ass['ID'] ?>" /></p>
+		<p<?php echo ($r_ass['CLASSE'] == '') ? '' : " class=".$r_ass['CLASSE'] ?>><label for="opz-<?php echo $r_ass['ID'] ?>"><?php echo sanitize($r_ass['TITOLO']) ?>:<span><?php echo sanitize($r_ass['DESCRIZIONE']) ?></span></label>
+			<input value="<?php echo sanitize($r_ass['VALORE']) ?>" type="text" name="<?php echo sanitize($r_ass['KEY']) ?>" id="opz-<?php echo $r_ass['ID'] ?>" /></p>
 			
 		<?php
 		$result->MoveNext();

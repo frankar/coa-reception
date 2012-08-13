@@ -197,10 +197,10 @@ $(document).ready(function() {
 					<p class="evidente"><label for="comando">Comando</label>
 						<select name="comando" id="comando" size="1">
 							<?php
-							$sql = "SELECT * FROM comandi;";
+							$sql = "SELECT id, nome, esteso FROM comandi;";
 							$rsl = $db->Execute($sql);
 							while (!$rsl->EOF) {
-								?><option <?php echo ($r['COMANDO'] == $rsl->fields[0]) ? 'selected="selected"':'' ?> value="<?php echo $rsl->fields[0] ?>"><?php echo $rsl->fields[2] ?><?php echo ($rsl->fields[3] != '' ? ' - '.$rsl->fields[3] : '') ?></option><?php
+								?><option <?php echo ($r['COMANDO'] == $rsl->fields[0]) ? 'selected="selected"':'' ?> value="<?php echo $rsl->fields[0] ?>"><?php echo $rsl->fields[1] ?><?php echo ($rsl->fields[2] != '' ? ' - '.$rsl->fields[2] : '') ?></option><?php
 								$rsl->MoveNext();
 							}
 							?>
