@@ -9,6 +9,9 @@
 	$message = '';
 	$message_class = "ok";
 	
+	$nome = '';
+	$cognome = '';
+	
 	// controllo le request
 
 	if (isset($_REQUEST['action'])) {
@@ -39,10 +42,22 @@
 	}
 	
 	if($inviato == '1') {
+		$err = array();
+
 		$nome = sanitize($_POST['nome']);
+		if (preg_match("/^[A-Z][a-zA-Z -]+$/", $nome) === 0)
+			$err['nome'] = "Il nome deve iniziare con una lettera maiuscola e puo' contenere solo lettere e questi caratteri: -'";
+
 		$cognome = sanitize($_POST['cognome']);
+		if (preg_match("/^[A-Z][a-zA-Z -']+$/", $cognome) === 0)
+			$err['cognome'] = "Il cognome deve iniziare con una lettera maiuscola e puo' contenere solo lettere e questi caratteri: -'";
+
 		$tel = sanitize($_POST['tel']);
+		if (preg_match("/([+(\d]{1})(([\d+() -.]){5,16})([+(\d]{1})/", $tel) === 0)
+			$err['tel'] = "Numeo di telefono non valido";
+		
 		$qual = $_POST['qual'];
+		
 		$tenda = sanitize($_POST['tenda']);
 		$comando = $_POST['com'];
 		$mansione = $_POST['mansione'];
@@ -216,8 +231,8 @@
 				?>
 			</select> <span class="button" id="add_qual">Aggiungi Qualifica</span></p>
 
-		<p class="evidente"><label for="nome">Nome:</label>
-			<input type="text" name="nome" id="nome" style="width:20em;" />
+		<p class="evidente<?php echo ($err['nome'] ? ' err':'') ?>"><label for="nome">Nome:</label>
+			<input type="text" name="nome" id="nome" value="<?php echo $nome ?>" style="width:20em;" />
 			<input type="hidden" id="id_person" name="id_person" /></p>
 		<p class="evidente"><label for="cognome">Cognome:</label>
 			<input type="text" name="cognome" id="cognome"  style="width:20em;" /></p>

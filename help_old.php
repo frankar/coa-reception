@@ -2,8 +2,9 @@
 <script src="js/jquery.lightbox_me.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
-	$("a.sub").click(function(e){
+	$("ul.help table a.sub").click(function(e) {
 		var idel = '#pop_'+$(this).attr('href');
+		//alert(this.parent().html());
 		$(idel)
 			.append('<a class="close" href="#"><img src="css/close_button.png" alt="Close Button" /></a>')
 			.lightbox_me({
@@ -11,6 +12,8 @@ $(document).ready(function() {
 		        });
 		e.preventDefault();
 	});
+	
+	
 });
 </script>
 <?php include("menu.php"); ?>
@@ -61,34 +64,7 @@ $(document).ready(function() {
             </tr>
         </table>
 	</div>
-        
-        <div class="pop" id="pop_editcom">
-		<h4>Modifica Comando</h4>
-		<table width="100%">
-                    <tr>
-                        <td>ID (sola lettura)</td>
-                        <td>casella non modificabile</td>
-                    </tr>
-                    <tr>               
-                        <td width="30%"><u>Sigla </u> </td>
-                        <td> Sigla della provincia del comando</td>
-                    </tr>
-                    <tr>
-                        <td><u>Nome </u></td>
-                        <td> Nome per esteso della provincia</td>
-                    </tr>
-                                        <tr>
-                        <td>E.mail</td>
-                        <td>Casella e-mail standard del comando</td>
-                    </tr>
-                    <tr>
-                        <td>Direzione</td>
-                        <td>Casella di selezionare per la direzione regionale di appartenza<br> 
-                            oppure inserirla se non presente premendo su <a class="sub" href="qual">"Aggiungi Direzione"</a></td>
-                    </tr>
 
-        </table>
-	</div>
 <?php
 $message_class = 'ok';
 $message = '';
@@ -167,27 +143,6 @@ if (isset($_REQUEST['p'])) {
                                 sopra ogni colonna con ordini ascendente/discendente e ricercato compilando la casella "Cerca nella tabella"</td></tr>
                         </table>             
                     </li>
-                    
-                    <li><strong>Mail ai Comandi</strong>:    invio mail resoconto movimenti giornalieri al comando di appartenenza del 
-                        personale
-                        <p>
-                             <table width="100%"><tr><td width="30%"><u>Giorno di riferimento</u> </td>
-                            <td> dalla casella calendario per la data a cui si riferisce la comunicazione</td></tr>
-                        </table>             
-                            e premere "Continua ->"  e di seguito viene generata
-                             una lista dei comandi a cui mandarle inseriti in apposito riquadro esplicativo con:          </p>                                    
-                        
-                        <table><tr><td width="30%"><u>Sigla </u> </td>
-                            <td> sigla della provincia del Comando oppure sigla inserita al momento della registrazione del personale (es. RM/ISA)
-                            </td>
-                        </tr>
-                        <tr><td><u>Nome </u></td><td> nome del comando</td></tr>
-                        <tr><td><u>E.mail </u></td><td> e-mail del comando ove presente</td></tr>
-                        </table>             
-                        Tutte i campi sono modificabili ma per agevolare il lavoro sono precompilati. Ove le informazioni non fossero corrette si possono modificare.
-                        Premendo su "Continua ->" si giunge alla scheda riassuntiva che verr&aacute; inviata ai destinatari indicati, premendo su "Conferma invio mail ->".
-                    </li>
-                    
                 </ul>
 			<?php
 			break;
@@ -295,54 +250,20 @@ if (isset($_REQUEST['p'])) {
                                     <td>Indicare il numero medio di giorni di permanenza (numero intero, es: 7)</td></tr>
                             <tr><td width="30%"><u>Ultima ricerca versione</u> </td>
                                     <td>Data ultimo controllo di nuova versione disponibile (normalmente non serve modificare questo valore)</td></tr>
-                            <tr><td width="30%"><u>Ultimo backup</u> </td><td>
+                            <tr><td width="30%"><u>Ultimo backup:</u> </td><td>
                                     Data ultimo backup effettuato (normalmente non serve modificare questo valore)</td></tr>
-                            <tr><td width="30%"><u>Percorso di backup</u> </td><td>
+                            <tr><td width="30%"><u>Percorso di backup:</u> </td><td>
                                 Specificare il percorso dove effettuare il backup automatico dei dati 
                                 (es. "serverbackupcoa" opp. "d:\backup"), 
                                 lasciare il campo vuoto per non effettuare il backup giornaliero automatico.</td></tr>
-                            <tr><td width="30%"><u>Frequenza Backup Automatico Dati</u> </td><td>
+                            <tr><td width="30%"><u>Frequenza Backup Automatico Dati:</u> </td><td>
                                 Specificare ogni quanto tempo effettuare il backup automatico. (es: "30 min", "1 hour", "3 day", 
                                 "1 week"). Specificare 0 per disabilitare il backup automatico</td></tr>
-                            <tr><td width="30%"><u>E.mail C.O.A.</u> </td><td>
-                                Inserire l'indirizzo e-mail del COA. Servira' come mittente per le mail in uscita dall'applicativo</td></tr>
-                            <tr><td width="30%"><u>Indirizzi e.mail C.C.</u> </td><td>
-                                Inserire gli indirizzi e-mail (separati da virgola) a cui inviare in copia 
-                                carbone le comunicazioni del COA</td></tr>
-                            <tr><td width="30%"><u>Controlla Numero di Telefono</u> </td><td>
-                                Inserire 0 per disabilitare sia l'unicita' che l'obbligatorieta' del numero di telefono del personale, inserire 1 per controllare 
-                                solo l'obbligatorieta' del numero di telefono, inserire 2 per abilitar</td></tr>
+                        </table>
+                    </li>
+                    <li><strong>Backup dati</strong>: file testuale SQL per esportare la banca dati, prendendo CTRL+S.
 
-                        </table>
                     </li>
-                    <li><strong>Backup dati</strong>: file testuale SQL per esportare la banca dati, prendendo CTRL+S.                    </li>
-                    <li><strong>Tabella comandi</strong>: scheda con l'elenco dei comandi, che possono essere 
-                        completati con la funzione di manutenzione di popolamento. Per ogni comando &eacute; possibile fare delle modifiche                         
-                        o eliminarlo tramite le icone poste sotto la colonna "Azioni": 
-                        <table>
-                            <tr><td><a class="sub" href="editcom"><img src="css/edit-icon.png" alt="Modifica"/></a></td>
-                                <td>apre una apposita <a class="sub" href="editcom">scheda</a> per modificare i dati relativi al comando</td></tr>
-                            <tr><td><img src="css/del-icon.png" alt="Elimina"/></td>
-                                <td>richiesta di eliminazione della riga della tabella (definitivamente)</td></tr>
-                        </table> 
-                        
-                    </li>
-                    <li><strong>Link di manutenzione</strong>: scheda di inserimento nominativi del personale in servizio per 
-                        il periodo con :
-                        <table>
-                            <tr>
-                                <td width="30%"><u>Popolazione della tabella Comandi in base alla lista Comandi d'Italia (util.php)</u> </td>       
-                        
-                                <td>inserisce tutti i comandi e le direzioni regionali non presenti nella banca dati 
-                                    con le relative informazioni di e-mail e direzione cui appartengono</td>
-                            </tr>
-                            <tr>
-                                <td width="30%"><u>Controlla struttura dati</u> </td>       
-                        
-                                <td>controlla la banca dati nella sua struttura e provvede a crearla o adeguarla</td>
-                            </tr>
-                        </table>
-                    </li>    
                 </ul>
 			<?php
 			break;
