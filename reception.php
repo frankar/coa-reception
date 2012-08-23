@@ -11,6 +11,7 @@
 	
 	$nome = '';
 	$cognome = '';
+	$err = array();
 	
 	// controllo le request
 
@@ -42,7 +43,6 @@
 	}
 	
 	if($inviato == '1') {
-		$err = array();
 
 		$nome = sanitize($_POST['nome']);
 		if (preg_match("/^[A-Z][a-zA-Z -]+$/", $nome) === 0)
@@ -231,7 +231,7 @@
 				?>
 			</select> <span class="button" id="add_qual">Aggiungi Qualifica</span></p>
 
-		<p class="evidente<?php echo ($err['nome'] ? ' err':'') ?>"><label for="nome">Nome:</label>
+		<p class="evidente<?php if (isset($err['nome'])) echo ($err['nome'] ? ' err':'') ?>"><label for="nome">Nome:</label>
 			<input type="text" name="nome" id="nome" value="<?php echo $nome ?>" style="width:20em;" />
 			<input type="hidden" id="id_person" name="id_person" /></p>
 		<p class="evidente"><label for="cognome">Cognome:</label>
