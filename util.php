@@ -197,7 +197,7 @@ $sql = "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_NAME = 'coma
 $rs = $db->Execute($sql);
 if ($rs->fields[0] < 5) {
 	?>
-		<p>La tabella comandi contiene pochi campi, prava a <a href="index.php?setup=1">reimpostare il DB</a></p>
+		<p>La tabella comandi contiene pochi campi, prova a <a href="index.php?setup=1">reimpostare il DB</a></p>
 	<?php
 	exit;
 }
