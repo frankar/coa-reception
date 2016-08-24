@@ -6,7 +6,7 @@ Gestione Reception COA
 Requisiti
 *********
 - Apache
-- PHP
+- PHP (ver 5.xx)
 - Mysql
 
 Per Windows può essere utile il pacchetto `Wamp Server <http://www.wampserver.com/en/>`_
